@@ -208,6 +208,12 @@ export async function initSessionState(params: {
   const entry = sessionStore[sessionKey];
   const previousSessionEntry = resetTriggered && entry ? { ...entry } : undefined;
   const now = Date.now();
+  const isFirstThreadTurn = ctx.IsFirstThreadTurn === true;
+  if (isFirstThreadTurn) {
+    // Force first thread replies to initialize as a new session so thread
+    // history/starter context is injected on the first turn.
+    isNewSession = true;
+  }
   const isThread = resolveThreadFlag({
     sessionKey,
     messageThreadId: ctx.MessageThreadId,
